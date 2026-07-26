@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LeafVision: Tomato Leaf Disease Detection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header class="site-header">
+  <span class="eyebrow">Field Diagnostic for Tomato Leaves</span>
+  <h1 class="wordmark">LeafVision</h1>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-copy">
+      <h2>Point a leaf at it. Get a read.</h2>
+      <p>
+        A CNN trained to spot early blight, late blight, and healthy tomato
+        leaves.
+        
+      </p>
+      <p class="research-note">
+        Built alongside a research study on how detection accuracy holds up
+        under blur, low light, and low resolution : the conditions real
+        field photos actually come in, not just clean datasets. This app is set to
+        test that deployability and functionality
+      </p>
+    </div>
+
+    <div class="scanner-panel">
+      <div class="scanner" id="scanner">
+        <svg class="leaf-outline" viewBox="0 0 200 240" id="leafSvg">
+          <path class="leaf-body" d="M100 10 C 40 40, 20 110, 60 180 C 80 215, 100 230, 100 230 C 100 230, 120 215, 140 180 C 180 110, 160 40, 100 10 Z"/>
+          <path class="leaf-vein main-vein" d="M100 20 L100 225"/>
+          <path class="leaf-vein" d="M100 60 C 80 70, 65 85, 55 100"/>
+          <path class="leaf-vein" d="M100 60 C 120 70, 135 85, 145 100"/>
+          <path class="leaf-vein" d="M100 100 C 78 112, 62 128, 52 145"/>
+          <path class="leaf-vein" d="M100 100 C 122 112, 138 128, 148 145"/>
+          <path class="leaf-vein" d="M100 140 C 82 150, 70 163, 62 178"/>
+          <path class="leaf-vein" d="M100 140 C 118 150, 130 163, 138 178"/>
+          <rect class="scan-line" x="30" y="10" width="140" height="4" />
+        </svg>
+        <img id="previewImg" class="preview-img" alt="Uploaded leaf preview">
+        <div class="scanner-hint">
+          <span class="scanner-hint-title">Drop a leaf photo here</span>
+          <span class="scanner-hint-sub">or click to browse(JPG or PNG)</span>
+        </div>
+      </div>
+      <input type="file" id="fileInput" accept="image/jpeg,image/png" hidden>
+
+      <div class="results" id="results" hidden>
+        <div class="results-top">
+          <span class="results-label">Best match</span>
+          <span class="results-top-value" id="topLabel"></span>
+          <span class="results-top-conf" id="topConf"></span>
+        </div>
+        <div class="results-bars" id="resultsBars"></div>
+        <button class="reset-btn" id="resetBtn" type="button">Try another photo</button>
+      </div>
+
+      <p class="error-msg" id="errorMsg" hidden></p>
+    </div>
+  </section>
+
+  <section class="about">
+    <div class="about-item">
+      <span class="about-index">Model</span>
+      <p>EfficientNet-B0 with transfer learning, fine-tuned on tomato leaf imagery across three classes.</p>
+    </div>
+    <div class="about-item">
+      <span class="about-index">Status</span>
+      <p>Early-stage public demo. Predictions are a research signal, not a substitute for agronomic advice.</p>
+    </div>
+    <div class="about-item">
+      <span class="about-index">Feedback</span>
+      <p>Wrong call on a photo? Please <a href="#" id="feedbackLink">let me know</a> what you uploaded and what it should have said.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <span>LeafVision - built as part of an ongoing CNN robustness study</span>
+</footer>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
