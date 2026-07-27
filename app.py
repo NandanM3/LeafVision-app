@@ -12,8 +12,7 @@ CLASS_MAP_PATH = APP_ROOT / "model" / "class_indices.json"
 
 app = Flask(__name__)
 
-# Loaded once at startup, not per-request -- model loading is slow and
-# request handlers should stay fast.
+# Loaded once at startup, not per-request -- model loading is slow and request handlers should stay fast
 print("Loading LeafVision model...")
 model = load_leafvision_model(MODEL_PATH)
 idx_to_class = load_class_map(CLASS_MAP_PATH)
