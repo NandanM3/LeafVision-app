@@ -3,7 +3,8 @@
 **A CNN-based tomato leaf disease classifier — live demo, open for feedback.**
  
  **Try it:** [Will add link once deployed]
- **Research behind it:** [LeafVision-ML](ADD_LINK_TO_YOUR_RESEARCH_REPO)
+ **Research behind it:** [LeafVision-ML] [Link to Repo]
+ 
  
 ---
  
