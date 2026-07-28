@@ -8,7 +8,7 @@ from flask import Flask, request, jsonify, render_template
 from inference.predict import load_class_map, load_leafvision_model, predict
 
 APP_ROOT = Path(__file__).resolve().parent
-MODEL_PATH = APP_ROOT / "model" / "leafvision_model.keras"
+MODEL_PATH = APP_ROOT / "model" / "leafvision_efficientnet_v1.keras"
 CLASS_MAP_PATH = APP_ROOT / "model" / "class_indices.json"
 
 app = Flask(__name__)
