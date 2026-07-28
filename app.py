@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 import numpy as np
 import cv2
@@ -7,12 +8,12 @@ from flask import Flask, request, jsonify, render_template
 from inference.predict import load_class_map, load_leafvision_model, predict
 
 APP_ROOT = Path(__file__).resolve().parent
-MODEL_PATH = APP_ROOT / "model" / "leafvision_efficientnet_v1.keras"
+MODEL_PATH = APP_ROOT / "model" / "leafvision_model.keras"
 CLASS_MAP_PATH = APP_ROOT / "model" / "class_indices.json"
 
 app = Flask(__name__)
 
-# Loaded once at startup, not per-request -- model loading is slow and request handlers should stay fast
+# Loaded once at startup
 print("Loading LeafVision model...")
 model = load_leafvision_model(MODEL_PATH)
 idx_to_class = load_class_map(CLASS_MAP_PATH)
@@ -41,5 +42,5 @@ def predict_route():
 
 
 if __name__ == "__main__":
-    # Port 7860 matches Hugging Face Spaces' default for Docker SDK apps.
-    app.run(debug=True, host="0.0.0.0", port=7860)
+    port = int(os.environ.get("PORT", 7860))
+    app.run(debug=False, host="0.0.0.0", port=port)
