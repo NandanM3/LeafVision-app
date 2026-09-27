@@ -36,8 +36,26 @@ and tell me if the prediction changes, and whether either one was just
 plain wrong. Mislabeled predictions are genuinely useful data, not an
 inconvenience please report them.
  
-**To give feedback:** open an [issue](../../issues) with the photo (or a
-description of it), what the model predicted, and what it should have said.
+**To give feedback:** upload a photo, choose thumbs up or thumbs down beneath
+the prediction, optionally add a comment, and press **Send feedback**.
+No account is required.
+
+Feedback records contain the predicted label, whether it looked wrong, an
+optional comment (up to 500 characters), and a UTC timestamp. These are tester
+opinions, not verified accuracy measurements or unique tester counts.
+
+On Render, set `DATABASE_URL` to your Neon PostgreSQL connection string. The app
+creates its tables at startup and stores feedback and scan counts outside Render,
+so deployments and restarts do not erase them. A missing connection string stops
+startup on Render instead of silently collecting feedback on temporary storage.
+
+For local development without `DATABASE_URL`, feedback and counts still save to
+`data/store.json` (excluded from Git). This local mode supports one process only.
+Existing JSON records are not automatically imported when switching to PostgreSQL;
+keep a backup if you have already collected real feedback.
+
+See [database setup and code walkthrough](docs/database.md) for Render settings,
+an explanation of every database change, and validation steps.
  
 ## The research behind it
  

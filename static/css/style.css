@@ -270,6 +270,21 @@ main {
 }
 
 /* --- About strip --- */
+.feedback-form { margin-top: 1.4rem; border-top: 1px solid rgba(241, 234, 217, 0.2); padding-top: 1rem; }
+.feedback-form fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.feedback-form legend { font-weight: 600; padding: 0; }
+.feedback-hint { color: var(--parchment-dim); font-size: 0.8rem; }
+.feedback-choices { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 1rem 0; }
+.feedback-choice { display: flex; align-items: center; gap: 0.4rem; padding: 0.65rem; border: 1px solid var(--parchment-dim); border-radius: 4px; cursor: pointer; }
+.feedback-choice:has(input:checked) { border-color: var(--leaf-bright); background: rgba(134, 194, 110, 0.15); }
+.feedback-choice input { accent-color: var(--leaf-bright); }
+.feedback-form textarea { display: block; width: 100%; margin-top: 0.5rem; padding: 0.7rem; resize: vertical; background: var(--moss-dark); color: var(--parchment); border: 1px solid var(--parchment-dim); border-radius: 4px; font: inherit; }
+.feedback-form textarea::placeholder { color: var(--parchment-dim); opacity: 0.8; }
+.feedback-submit { padding: 0.7rem 1rem; border: 0; border-radius: 4px; background: var(--leaf-bright); color: var(--moss-deeper); font: inherit; font-weight: 600; cursor: pointer; }
+.feedback-form :focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+.feedback-form :disabled { opacity: 0.65; cursor: default; }
+.feedback-status { font-size: 0.85rem; color: var(--leaf-bright); }
+.feedback-status[data-error="true"] { color: var(--amber); }
 
 .about {
   display: grid;

@@ -7,6 +7,50 @@ const topLabel = document.getElementById("topLabel");
 const topConf = document.getElementById("topConf");
 const errorMsg = document.getElementById("errorMsg");
 const resetBtn = document.getElementById("resetBtn");
+const feedbackForm = document.getElementById("feedbackForm");
+const feedbackFields = document.getElementById("feedbackFields");
+const feedbackComment = document.getElementById("feedbackComment");
+const feedbackStatus = document.getElementById("feedbackStatus");
+const feedbackSubmit = document.getElementById("feedbackSubmit");
+let currentLabel = null;
+let scanVersion = 0;
+
+function resetFeedback() {
+  currentLabel = null;
+  feedbackForm.reset();
+  feedbackFields.disabled = false;
+  feedbackStatus.textContent = "";
+  feedbackStatus.dataset.error = "false";
+  feedbackSubmit.textContent = "Send feedback";
+}
+
+feedbackForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const rating = feedbackForm.querySelector('input[name="rating"]:checked');
+  if (!rating || !currentLabel || feedbackFields.disabled) return;
+  const version = scanVersion;
+  const payload = { predicted_label: currentLabel, looked_wrong: rating.value === "down", comment: feedbackComment.value.trim() };
+  feedbackFields.disabled = true;
+  feedbackSubmit.textContent = "Sending…";
+  feedbackStatus.textContent = "";
+  feedbackStatus.dataset.error = "false";
+  try {
+    const response = await fetch("/feedback", {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+    if (!response.ok || !data.ok) throw new Error("Feedback was not saved.");
+    if (version !== scanVersion) return;
+    feedbackSubmit.textContent = "Feedback sent";
+    feedbackStatus.textContent = "Thanks! Your feedback has been saved.";
+  } catch (error) {
+    if (version !== scanVersion) return;
+    feedbackFields.disabled = false;
+    feedbackSubmit.textContent = "Try sending again";
+    feedbackStatus.dataset.error = "true";
+    feedbackStatus.textContent = "Couldn't save your feedback. Your choices are still here—please try again.";
+  }
+});
 
 function humanizeLabel(raw) {
   // Turns something like "Tomato___Early_blight" into "Early Blight"
@@ -24,6 +68,8 @@ function showError(msg) {
 }
 
 function resetUI() {
+  scanVersion += 1;
+  resetFeedback();
   scanner.classList.remove("has-image", "scanning");
   previewImg.src = "";
   results.hidden = true;
@@ -32,6 +78,8 @@ function resetUI() {
 }
 
 function renderResults(data) {
+  resetFeedback();
+  currentLabel = data.top.label;
   scanner.classList.remove("scanning");
 
   topLabel.textContent = humanizeLabel(data.top.label);
@@ -53,13 +101,18 @@ function renderResults(data) {
 }
 
 async function submitImage(file) {
+  const version = ++scanVersion;
+  resetFeedback();
+  results.hidden = true;
   errorMsg.hidden = true;
 
   const reader = new FileReader();
   reader.onload = (e) => {
+    if (version !== scanVersion) return;
     previewImg.src = e.target.result;
-    scanner.classList.add("has-image", "scanning");
+    scanner.classList.add("has-image");
   };
+  scanner.classList.add("scanning");
   reader.readAsDataURL(file);
 
   const formData = new FormData();
@@ -68,6 +121,7 @@ async function submitImage(file) {
   try {
     const res = await fetch("/predict", { method: "POST", body: formData });
     const data = await res.json();
+    if (version !== scanVersion) return;
 
     if (!res.ok) {
       scanner.classList.remove("scanning");
@@ -77,6 +131,7 @@ async function submitImage(file) {
 
     renderResults(data);
   } catch (err) {
+    if (version !== scanVersion) return;
     scanner.classList.remove("scanning");
     showError("Couldn't reach the model. Try again in a moment.");
   }

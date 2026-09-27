@@ -61,6 +61,21 @@
           <span class="results-top-conf" id="topConf"></span>
         </div>
         <div class="results-bars" id="resultsBars"></div>
+        <form id="feedbackForm" class="feedback-form">
+          <fieldset id="feedbackFields">
+            <legend>Does this prediction look right?</legend>
+            <p class="feedback-hint">Your feedback helps improve LeafVision. Unsure? You can skip this.</p>
+            <div class="feedback-choices">
+              <label class="feedback-choice"><input type="radio" name="rating" value="up" required> <span>👍 Looks right</span></label>
+              <label class="feedback-choice"><input type="radio" name="rating" value="down" required> <span>👎 Looks wrong</span></label>
+            </div>
+            <label for="feedbackComment">Anything to add? <span class="feedback-hint">(optional)</span></label>
+            <textarea id="feedbackComment" maxlength="500" rows="3" placeholder="What did you photograph, or what did you expect?" aria-describedby="feedbackLimit"></textarea>
+            <p class="feedback-hint" id="feedbackLimit">Up to 500 characters. Please leave out personal details.</p>
+            <button class="feedback-submit" id="feedbackSubmit" type="submit">Send feedback</button>
+          </fieldset>
+          <p id="feedbackStatus" class="feedback-status" role="status" aria-live="polite"></p>
+        </form>
         <button class="reset-btn" id="resetBtn" type="button">Try another photo</button>
       </div>
 
@@ -79,7 +94,7 @@
     </div>
     <div class="about-item">
       <span class="about-index">Feedback</span>
-      <p>Wrong call on a photo? Please <a href="#" id="feedbackLink">let me know</a> what you uploaded and what it should have said.</p>
+      <p>After a prediction, give it a thumbs up or down and optionally tell me what you expected.</p>
     </div>
   </section>
 </main>
