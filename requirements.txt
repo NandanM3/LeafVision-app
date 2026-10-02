@@ -5,6 +5,5 @@ tensorflow-cpu==2.20.0
 # libraries that conflict with TensorFlow when both load into one process.
 numpy==1.26.4
 opencv-python-headless==4.11.0.86
-# Use Psycopg's pure-Python wrapper with Debian's system libpq. The binary
-# wheel bundles native libpq/OpenSSL libraries that can conflict in-process.
-psycopg>=3.2,<4
+# Pure-Python PostgreSQL driver: no libpq/OpenSSL extension beside TensorFlow.
+pg8000==1.31.5

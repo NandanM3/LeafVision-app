@@ -68,8 +68,9 @@ class FeedbackTests(unittest.TestCase):
         self.assertIn(b'id="feedbackForm"', response.data)
 
     def test_database_failure_does_not_claim_success(self):
-        with patch.dict(os.environ, {"DATABASE_URL": "postgresql://unused"}), patch.object(
-            feedback_store.psycopg, "connect", side_effect=feedback_store.psycopg.OperationalError("private details")
+        with patch.dict(os.environ, {"DATABASE_URL": "postgresql://user:pass@unused/db"}), patch.object(
+            feedback_store.pg8000.dbapi, "connect",
+            side_effect=feedback_store.pg8000.dbapi.InterfaceError("private details")
         ):
             response = self.client.post("/feedback", json=self.payload())
         self.assertEqual(response.status_code, 503)

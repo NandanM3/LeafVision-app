@@ -41,12 +41,11 @@ database run remotely; your computer does not need to stay on.
 
 ### requirements.txt: the database driver
 
-`psycopg>=3.2,<4` installs Psycopg version 3, the Python PostgreSQL driver, without
-its self-contained binary extension. The Docker image installs Debian's `libpq5`
-client library and sets `PSYCOPG_IMPL=python`, so Psycopg uses its pure-Python
-wrapper around that system library. This is fast enough for the small feedback
-workload and avoids loading private libpq/OpenSSL copies beside TensorFlow's
-native libraries. The version range excludes a future incompatible major version.
+`pg8000==1.31.5` installs a PostgreSQL driver implemented in Python. It speaks the
+PostgreSQL network protocol without loading `libpq` or a bundled OpenSSL library
+into TensorFlow's process. The exact version is pinned so deployments do not
+silently change the database client. Its performance is ample for individual
+feedback inserts and counter updates.
 
 ### schema.sql: the structure of the stored data
 
@@ -83,19 +82,20 @@ to JSON. `LEAFVISION_STORE_PATH` only affects local JSON mode.
 `StorageError` inherits from `OSError`, letting route handlers catch both local
 file failures and database failures with the same exception handler.
 
-`_connection()` is a context manager, used with Python's `with` statement. It opens
-a short-lived connection with a 10-second connection timeout and sets a 10-second
-SQL statement timeout for the transaction. `row_factory=dict_row` makes results
-accessible by column names such as `row['scan_count']` instead of numeric positions.
+`_connection()` is a context manager, used with Python's `with` statement. It
+parses the private `DATABASE_URL`, decodes escaped credentials, and opens a
+short-lived connection with a 10-second connection timeout. A default Python TLS
+context encrypts the connection and verifies the database server's certificate.
+The function also sets a 10-second SQL statement timeout for the transaction.
 
-The `yield` temporarily hands the connection to the caller. When the caller's
-block finishes, Psycopg commits successful changes, or rolls them back if an
-exception occurred, then closes the connection. A commit failure also raises an
-error: the route does not claim a successful save before commit completes.
+The `yield` temporarily hands a database cursor to the caller. When the caller's
+block finishes, the function commits successful changes. Driver errors trigger a
+rollback, and the connection closes in every case. A commit failure also raises
+an error: the route does not claim a successful save before commit completes.
 The timeouts bound connection attempts and individual queries; they are not a
 single end-to-end request deadline.
 
-Driver errors become generic `StorageError` messages. Raw errors can contain
+pg8000 errors become generic `StorageError` messages. Raw errors can contain
 connection details or submitted text, so the application avoids logging them.
 
 `initialize_storage()` reads `schema.sql` and executes it in a transaction at app
@@ -104,7 +104,7 @@ against an uninitialized database. Restarting after fixing configuration retries
 setup. An outage after startup is handled by the routes below.
 
 `save_feedback()` inserts a row using `%s` placeholders and a separate tuple of
-values. These are Psycopg parameters, not Python string interpolation. A comment
+values. These are database parameters, not Python string interpolation. A comment
 containing quotes or SQL-looking text remains plain data and cannot become a SQL
 command. The existing trimming and 500-character cap are preserved; the HTTP
 route also rejects oversized input before it reaches this function.

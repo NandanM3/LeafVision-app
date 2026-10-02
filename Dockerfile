@@ -9,16 +9,12 @@ WORKDIR /app
 # Unbuffered output makes each startup checkpoint appear in Render's logs
 # immediately, which makes import and model-loading failures distinguishable.
 ENV TF_ENABLE_ONEDNN_OPTS=0 \
-    PYTHONUNBUFFERED=1 \
-    PSYCOPG_IMPL=python
+    PYTHONUNBUFFERED=1
 
-# OpenCV needs the graphics libraries even in headless mode. Psycopg's pure
-# Python wrapper uses Debian's libpq instead of a wheel containing private
-# libpq/OpenSSL copies that can conflict with TensorFlow's native libraries.
+# OpenCV needs these graphics libraries even in headless mode.
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1 \
     libglib2.0-0 \
-    libpq5 \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
