@@ -56,6 +56,12 @@ keep a backup if you have already collected real feedback.
 
 See [database setup and code walkthrough](docs/database.md) for Render settings,
 an explanation of every database change, and validation steps.
+
+The Docker image uses TensorFlow's CPU-only package and disables oneDNN custom
+kernels. This matches Render's CPU service and avoids a native allocator crash
+seen during startup. Python output is unbuffered so the last startup checkpoint
+is visible immediately in Render logs if the TensorFlow import, feedback-storage
+setup, or model-loading phase fails.
  
 ## The research behind it
  

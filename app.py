@@ -5,6 +5,7 @@ import numpy as np
 import cv2
 from flask import Flask, request, jsonify, render_template
 
+print("Importing LeafVision TensorFlow inference module...")
 from inference.predict import load_class_map, load_leafvision_model, predict
 import feedback_store
 
@@ -13,7 +14,9 @@ MODEL_PATH = APP_ROOT / "model" / "leafvision_efficientnet_v1.keras"
 CLASS_MAP_PATH = APP_ROOT / "model" / "class_indices.json"
 
 app = Flask(__name__)
+print("Initializing LeafVision feedback storage...")
 feedback_store.initialize_storage()
+print("Feedback storage initialized.")
 
 # Loaded once at startup, not per-request -- model loading is slow and
 # request handlers should stay fast.
