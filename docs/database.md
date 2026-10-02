@@ -41,10 +41,12 @@ database run remotely; your computer does not need to stay on.
 
 ### requirements.txt: the database driver
 
-`psycopg[binary]>=3.2,<4` installs Psycopg version 3, the Python PostgreSQL driver.
-The binary extra provides compiled dependencies so the Docker build does not need
-a compiler or PostgreSQL development tools. The version range excludes a future
-major version with potentially incompatible behavior.
+`psycopg>=3.2,<4` installs Psycopg version 3, the Python PostgreSQL driver, without
+its self-contained binary extension. The Docker image installs Debian's `libpq5`
+client library and sets `PSYCOPG_IMPL=python`, so Psycopg uses its pure-Python
+wrapper around that system library. This is fast enough for the small feedback
+workload and avoids loading private libpq/OpenSSL copies beside TensorFlow's
+native libraries. The version range excludes a future incompatible major version.
 
 ### schema.sql: the structure of the stored data
 

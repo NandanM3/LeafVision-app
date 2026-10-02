@@ -64,6 +64,9 @@ is visible immediately in Render logs if the TensorFlow import, feedback-storage
 setup, or model-loading phase fails. NumPy and OpenCV are pinned to known versions,
 TensorFlow loads before OpenCV to avoid native-library allocator conflicts, and
 the container is pinned to Debian 12 instead of a moving Linux base-image tag.
+Psycopg uses its pure-Python wrapper with Debian's PostgreSQL client library;
+this avoids loading the binary wheel's private libpq and OpenSSL copies beside
+TensorFlow.
  
 ## The research behind it
  

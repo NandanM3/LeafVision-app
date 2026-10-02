@@ -46,9 +46,12 @@ def _connection():
 def initialize_storage():
     """Create missing tables at startup without clearing existing records."""
     if _database_url():
+        print(f"Preparing PostgreSQL schema with Psycopg's {psycopg.pq.__impl__} implementation...")
         schema = Path(__file__).with_name("schema.sql").read_text(encoding="utf-8")
         with _connection() as conn:
+            print("PostgreSQL connection opened.")
             conn.execute(schema)
+        print("PostgreSQL schema ready.")
 
 
 def _read():
