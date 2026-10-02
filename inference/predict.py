@@ -10,10 +10,12 @@ not diverge from the pipeline that was actually evaluated.
 from pathlib import Path
 import json
 
-import numpy as np
-import cv2
+# Load TensorFlow before OpenCV. Their wheels both contain native libraries;
+# this order avoids an allocator conflict observed in the Render container.
 from tensorflow.keras.applications.efficientnet import preprocess_input
 from tensorflow.keras.models import load_model
+import numpy as np
+import cv2
 
 IMG_SIZE = (128, 128)
 

@@ -1,12 +1,16 @@
 from pathlib import Path
 import os
 
+# TensorFlow must load before OpenCV. Both packages include native C/C++
+# libraries, and loading OpenCV first can cause an allocator conflict on Linux.
+print("Importing LeafVision TensorFlow inference module...")
+from inference.predict import load_class_map, load_leafvision_model, predict
+print("TensorFlow inference module imported.")
+
 import numpy as np
 import cv2
 from flask import Flask, request, jsonify, render_template
 
-print("Importing LeafVision TensorFlow inference module...")
-from inference.predict import load_class_map, load_leafvision_model, predict
 import feedback_store
 
 APP_ROOT = Path(__file__).resolve().parent

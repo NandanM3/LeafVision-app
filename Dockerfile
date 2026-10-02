@@ -1,4 +1,6 @@
-FROM python:3.11-slim
+# Pin Debian 12. The moving `3.11-slim` tag now targets Debian 13, which can
+# change the C runtime underneath TensorFlow without any repository change.
+FROM python:3.11-slim-bookworm
 
 WORKDIR /app
 

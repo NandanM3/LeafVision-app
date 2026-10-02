@@ -61,7 +61,9 @@ The Docker image uses TensorFlow's CPU-only package and disables oneDNN custom
 kernels. This matches Render's CPU service and avoids a native allocator crash
 seen during startup. Python output is unbuffered so the last startup checkpoint
 is visible immediately in Render logs if the TensorFlow import, feedback-storage
-setup, or model-loading phase fails.
+setup, or model-loading phase fails. NumPy and OpenCV are pinned to known versions,
+TensorFlow loads before OpenCV to avoid native-library allocator conflicts, and
+the container is pinned to Debian 12 instead of a moving Linux base-image tag.
  
 ## The research behind it
  

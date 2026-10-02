@@ -1,6 +1,8 @@
 flask==3.0.3
 # Render provides CPU compute, so install TensorFlow's CPU-only Linux package.
 tensorflow-cpu==2.20.0
-opencv-python-headless
-numpy
+# Pin the native numerical stack. New OpenCV major releases can bundle native
+# libraries that conflict with TensorFlow when both load into one process.
+numpy==1.26.4
+opencv-python-headless==4.11.0.86
 psycopg[binary]>=3.2,<4
